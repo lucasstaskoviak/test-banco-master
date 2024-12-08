@@ -1,19 +1,26 @@
-namespace Travels.Application.Common;
-
-public class Result<T>
+namespace Travels.Application.Common
 {
-    public bool IsSuccess { get; private set; }
-    public T? Value { get; private set; }
-    public string? ErrorMessage { get; private set; }
-
-    private Result(bool isSuccess, T? value = default, string? errorMessage = null)
+    public class Result<T>
     {
-        IsSuccess = isSuccess;
-        Value = value;
-        ErrorMessage = errorMessage;
+        public bool IsSuccess { get; private set; }
+        public bool IsFailure => !IsSuccess;
+        public T Value { get; private set; }
+        public string Error { get; private set; }
+
+        // Construtor privado para evitar criação fora da classe
+        private Result(bool isSuccess, T value, string error)
+        {
+            IsSuccess = isSuccess;
+            Value = value;
+            Error = error;
+        }
+
+        // Método para criar um resultado de sucesso
+        public static Result<T> Success(T value) =>
+            new Result<T>(true, value, null);
+
+        // Método para criar um resultado de falha
+        public static Result<T> Failure(string error) =>
+            new Result<T>(false, default(T), error);
     }
-
-    public static Result<T> Success(T value) => new Result<T>(true, value);
-
-    public static Result<T> Failure(string errorMessage) => new Result<T>(false, default, errorMessage);
 }

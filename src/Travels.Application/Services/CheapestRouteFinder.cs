@@ -60,7 +60,7 @@ namespace Travels.Application.Services
             return graph;
         }
 
-        private (decimal totalCost, List<Route> path) Dijkstra(
+        private (decimal totalCost, List<Route>? path) Dijkstra(
             Dictionary<string, List<(string destination, decimal price)>> graph,
             string origin,
             string destination)
@@ -103,7 +103,7 @@ namespace Travels.Application.Services
 
             if (distances[destination] == decimal.MaxValue)
             {
-                throw new InvalidOperationException("No route exists between the given locations.");
+                return (decimal.MaxValue, null);
             }
 
             var path = new List<Route>();
@@ -120,5 +120,6 @@ namespace Travels.Application.Services
             path.Reverse();
             return (distances[destination], path);
         }
+
     }
 }

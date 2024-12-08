@@ -37,12 +37,12 @@ public class RouteRepository : IRouteRepository
     }
 
     public async Task UpdateAsync(Route route)
-{
-    var index = _routes.FindIndex(r => r.Id == route.Id);
-    if (index != -1)
     {
-        _routes[index] = route;
+        var index = _routes.FindIndex(r => r.Id == route.Id);
+        if (index != -1)
+        {
+            _routes[index] = route;
+        }
+        await Task.CompletedTask;
     }
-    await Task.CompletedTask;
-}
 }

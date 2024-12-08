@@ -35,7 +35,7 @@ namespace Travels.Api.Controllers
             {
                 return CreatedAtAction(nameof(Get), new { id = result.Value?.Id }, result.Value);
             }
-            return BadRequest(result.ErrorMessage);
+            return BadRequest(result.Error);
         }
 
         [HttpPut("{id}")]
@@ -53,7 +53,7 @@ namespace Travels.Api.Controllers
                 return Ok(result.Value);
             }
 
-            return NotFound(result.ErrorMessage);
+            return NotFound(result.Error);
         }
 
         [HttpGet]
@@ -86,7 +86,7 @@ namespace Travels.Api.Controllers
                 return Ok(result.Value);
             }
 
-            return BadRequest(result.ErrorMessage);
+            return BadRequest(result.Error);
         }
 
         [HttpDelete("{id}")]

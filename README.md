@@ -128,9 +128,14 @@ Para instalar siga as instruções da página a seguir: https://dotnet.microsoft
     dotnet restore
 ```
 
+- Construa a aplicação:
+```
+    dotnet build
+```
+
 - Execute a API:
 ```
-    dotnet run --project Travels.Api
+    dotnet run --project src/Travels.Api
 ```
 
 Assim que o projeto for iniciado, um banco de dados em memória será criado. Esse banco possue dados relativos ao test case imposto pela empresa. Toda vez que o projeto roda, esses dados são gerados novamente.

@@ -22,49 +22,54 @@ O projeto é organizado utilizando o padrão Clean Architecture e contém as seg
 - Travels.Test: Contém os testes unitários da aplicação.
 
 ## Endpoints
-- 1. POST /routes
-Cria uma nova rota de viagem.
 
+- POST /routes
+Cria uma nova rota de viagem.
 Resposta:
 - Código 201: Rota criada com sucesso.
 
-- 2. GET /routes
-Obtém todas as rotas cadastradas.
 
+
+- GET /routes
+Obtém todas as rotas cadastradas.
 Resposta:
 - Código 200: Retorna uma lista de rotas.
 
-- 3. GET /routes/{id}
-Obtém uma rota específica pelo ID.
 
+
+- GET /routes/{id}
+Obtém uma rota específica pelo ID.
 Resposta:
 - Código 200: Retorna a rota solicitada.
 - Código 404: Rota não encontrada.
 
-- 4. PUT /routes/{id}
-Atualiza uma rota existente.
 
+
+- PUT /routes/{id}
+Atualiza uma rota existente.
 Resposta:
 - Código 200: Rota atualizada com sucesso.
 - Código 404: Rota não encontrada.
 
-- 5. DELETE /routes/{id}
-Deleta uma rota pelo ID.
 
+
+- DELETE /routes/{id}
+Deleta uma rota pelo ID.
 Resposta:
 - Código 204: Rota deletada com sucesso.
 - Código 404: Rota não encontrada.
 
-- 6. GET /routes/cheapest/from/{from}/to/{to}
-Calcula a rota mais barata entre dois destinos.
 
+
+- GET /routes/cheapest/from/{from}/to/{to}
+Calcula a rota mais barata entre dois destinos.
 Parâmetros da URL:
 - from: Local de origem.
 - to: Local de destino.
-
 Resposta:
 - Código 200: Retorna a rota mais barata, incluindo o caminho e o custo total.
 - Código 404: Se não for possível encontrar uma rota.
+
 
 
 ## Testes
@@ -86,16 +91,17 @@ Para rodar a aplicação localmente:
     cd test-banco-master
 ```
 
-Restaure as dependências:
+- Restaure as dependências:
 ```
     dotnet restore
 ```
 
-Execute a API:
+- Execute a API:
 ```
     dotnet run --project Travels.Api
 ```
 
+Assim que o projeto for iniciado, um banco de dados em memória será criado. Esse banco possue dados relativos ao test case imposto pela empresa. Toda vez que o projeto roda, esses dados são gerados novamente.
 A API estará disponível em https://localhost:7113/swagger.
 
 
@@ -112,7 +118,7 @@ Para rodar os teste:
     dotnet test
 ```
 
-## Melhorias posíveis
+## Melhorias possíveis
 - Utilizar docker-compose para fazer o orquestramento de containers;
 - Adicionar mecanismo de log (Serilog);
 - Utilizar um banco de dados para persistência de dados;
@@ -121,5 +127,8 @@ Para rodar os teste:
 - Criar pipeline para executar testes e build automaticamente;
 - Criar DTO's específicos para cada tipo de representação de entidades;
 - Segmentar a parte de interação de base de dados e regra de negócio em Services e Repositories;
+- Implementar ou usar alguma library para lidar com erros de maneira mais eficiente;
+- Melhorar documentação de API's e utilizar SwaggerRequestExample;
 - Teste de integração;
 - Padronizar/Annotations propriedades das entidades;
+- Adicionar JWT para autenticação.

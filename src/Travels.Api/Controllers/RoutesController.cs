@@ -27,7 +27,16 @@ namespace Travels.Api.Controllers
             _updateRouteHandler = updateRouteHandler;
         }
 
+        /// <summary>
+        /// Cria uma nova rota de viagem.
+        /// </summary>
+        /// <param name="command">Objeto contendo os detalhes da rota.</param>
+        /// <returns>Rota criada.</returns>
+        /// <response code="201">Retorna a rota criada com sucesso.</response>
+        /// <response code="400">Se os dados fornecidos forem inválidos.</response>
         [HttpPost]
+        [ProducesResponseType(typeof(AddRouteCommand), 201)]
+        [ProducesResponseType(400)]
         public async Task<IActionResult> Post([FromBody] AddRouteCommand command)
         {
             var result = await _addRouteHandler.Handle(command);
@@ -38,6 +47,13 @@ namespace Travels.Api.Controllers
             return BadRequest(result.Error);
         }
 
+        /// <summary>
+        /// Atualiza uma rota de viagem.
+        /// </summary>
+        /// <param name="command">Objeto contendo os detalhes da rota.</param>
+        /// <returns>Rota criada.</returns>
+        /// <response code="200">Retorna a rota alterada com sucesso.</response>
+        /// <response code="400">Se os dados fornecidos forem inválidos.</response>
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateRouteCommand command)
         {
@@ -56,13 +72,24 @@ namespace Travels.Api.Controllers
             return NotFound(result.Error);
         }
 
+        /// <summary>
+        /// Obtém todas as rotas cadastradas.
+        /// </summary>
+        /// <returns>Lista de rotas.</returns>
+        /// <response code="200">Retorna a lista de rotas.</response>
         [HttpGet]
+        [ProducesResponseType(typeof(List<Domain.Entities.Route>), 200)]
         public async Task<ActionResult<IEnumerable<Domain.Entities.Route>>> Get()
         {
             var routes = await _routeRepository.GetAllAsync();
             return Ok(routes);
         }
 
+        /// <summary>
+        /// Obtém rota específica.
+        /// </summary>
+        /// <returns>Rota específica.</returns>
+        /// <response code="200">Retorna a rota.</response>
         [HttpGet("{id}")]
         public async Task<ActionResult<Domain.Entities.Route>> Get(int id)
         {
@@ -76,6 +103,15 @@ namespace Travels.Api.Controllers
             return Ok(route);
         }
 
+
+        /// <summary>
+        /// Calcula a rota mais barata entre dois destinos.
+        /// </summary>
+        /// <param name="from">Local de origem.</param>
+        /// <param name="to">Local de destino.</param>
+        /// <returns>Rota mais barata.</returns>
+        /// <response code="200">Retorna a rota mais barata encontrada.</response>
+        /// <response code="404">Se nenhuma rota for encontrada entre os destinos.</response>
         [HttpGet("cheapest/from/{from}/to/{to}")]
         public async Task<IActionResult> GetCheapestRoute(string from, string to)
         {

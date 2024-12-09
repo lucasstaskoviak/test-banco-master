@@ -8,6 +8,7 @@ using Travels.Application.UseCases.GetCheapestRoute;
 using Travels.Infrastructure;
 using Travels.Infrastructure.Seed;
 using Travels.Infrastructure.Repositories;
+using Microsoft.OpenApi.Models;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,7 +18,19 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Travels API",
+        Version = "v1",
+        Description = "API para gerenciamento de rotas de viagem, incluindo cálculo da rota mais barata."
+    });
+
+    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
+});
 
 // Custom services para atender ao Clean Arch
 builder.Services.AddApplicationServices(); // Serviços de Application
@@ -40,11 +53,13 @@ using (var scope = app.Services.CreateScope())
     await seeder.SeedAsync();
 }
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Travels API v1");
+    });
 }
 
 app.UseHttpsRedirection();

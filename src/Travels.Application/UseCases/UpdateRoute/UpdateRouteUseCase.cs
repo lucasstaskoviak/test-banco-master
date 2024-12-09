@@ -4,26 +4,26 @@ using Travels.Domain.Entities;
 
 namespace Travels.Application.UseCases.UpdateRoute;
 
-public class UpdateRouteHandler
+public class UpdateRouteUseCase
 {
     private readonly IRouteRepository _repository;
 
-    public UpdateRouteHandler(IRouteRepository repository)
+    public UpdateRouteUseCase(IRouteRepository repository)
     {
         _repository = repository;
     }
 
-    public async Task<Result<Route>> Handle(UpdateRouteCommand command)
+    public async Task<Result<Route>> ExecuteAsync(UpdateRouteDto dto)
     {
-        var existingRoute = await _repository.GetByIdAsync(command.Id);
+        var existingRoute = await _repository.GetByIdAsync(dto.Id);
         if (existingRoute == null)
         {
             return Result<Route>.Failure("Route not found.");
         }
 
-        existingRoute.Origin = command.Origin;
-        existingRoute.Destination = command.Destination;
-        existingRoute.Price = command.Price;
+        existingRoute.Origin = dto.Origin;
+        existingRoute.Destination = dto.Destination;
+        existingRoute.Price = dto.Price;
 
         await _repository.UpdateAsync(existingRoute);
 

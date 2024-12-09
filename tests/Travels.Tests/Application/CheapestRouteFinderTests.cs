@@ -1,16 +1,16 @@
 using Moq;
 using FluentAssertions;
 using Xunit;
-using Travels.Application.Interfaces.Services;
+using Travels.Application.Interfaces;
 using Travels.Application.Interfaces.Repositories;
 using Travels.Domain.Entities;
-using Travels.Application.Services;
+using Travels.Application.UseCases.GetCheapestRoute;
 
 namespace Travels.Application.Tests
 {
     public class CheapestRouteFinderTests
     {
-        private readonly ICheapestRouteFinder _cheapestRouteFinder;
+        private readonly IGetCheapestRouteCommand _getCheapestRouteCommand;
         private readonly Mock<IRouteRepository> _routeRepositoryMock;
 
         public CheapestRouteFinderTests()
@@ -31,13 +31,13 @@ namespace Travels.Application.Tests
                     new Route("FRA", "LCA", 1)
                 });
 
-            _cheapestRouteFinder = new CheapestRouteFinder(_routeRepositoryMock.Object);
+            _getCheapestRouteCommand = new GetCheapestRouteCommand(_routeRepositoryMock.Object);
         }
 
         [Fact]
         public async Task Should_Return_CheapestRoute_When_ValidRequest()
         {
-            var result = await _cheapestRouteFinder.FindCheapestRouteAsync("GRU", "CDG");
+            var result = await _getCheapestRouteCommand.FindCheapestRouteAsync("GRU", "CDG");
             result.Should().NotBeNull();
             result.Value.Should().NotBeNull();
             var cheapestTravel = result.Value.CheapestTravel;
@@ -47,7 +47,7 @@ namespace Travels.Application.Tests
         [Fact]
         public async Task Should_Return_Failure_When_No_Route_Exists()
         {
-            var result = await _cheapestRouteFinder.FindCheapestRouteAsync("GRU", "FRA");
+            var result = await _getCheapestRouteCommand.FindCheapestRouteAsync("GRU", "FRA");
             result.Should().NotBeNull();
             result.IsFailure.Should().BeTrue();
             result.Error.Should().Be("No route available between the specified locations.");
@@ -56,7 +56,7 @@ namespace Travels.Application.Tests
         [Fact]
         public async Task Should_Return_Failure_When_Locations_Do_Not_Exist()
         {
-            var result = await _cheapestRouteFinder.FindCheapestRouteAsync("GRU", "XYZ");
+            var result = await _getCheapestRouteCommand.FindCheapestRouteAsync("GRU", "XYZ");
             result.Should().NotBeNull();
             result.IsFailure.Should().BeTrue();
             result.Error.Should().Be("One or both locations do not exist in the database.");

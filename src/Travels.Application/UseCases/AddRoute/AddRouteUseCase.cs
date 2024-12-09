@@ -4,20 +4,20 @@ using Travels.Domain.Entities;
 
 namespace Travels.Application.UseCases.AddRoute
 {
-    public class AddRouteHandler
+    public class AddRouteUseCase
     {
         private readonly IRouteRepository _repository;
 
-        public AddRouteHandler(IRouteRepository repository)
+        public AddRouteUseCase(IRouteRepository repository)
         {
             _repository = repository;
         }
 
-        public async Task<Result<Route>> Handle(AddRouteCommand command)
+        public async Task<Result<Route>> ExecuteAsync(AddRouteDto dto)
         {
             try
             {
-                var route = new Route(command.Origin, command.Destination, command.Price);
+                var route = new Route(dto.Origin, dto.Destination, dto.Price);
                 await _repository.AddAsync(route);
 
                 return Result<Route>.Success(route);

@@ -1,9 +1,11 @@
 using Travels.Application;
-using Travels.Application.Interfaces.Services;
-using Travels.Application.Services;
-using Travels.Application.Interfaces.Repositories;
+using Travels.Application.Interfaces;
 using Travels.Application.UseCases.AddRoute;
+using Travels.Application.UseCases.DeleteRoute;
+using Travels.Application.UseCases.GetRoute;
+using Travels.Application.UseCases.GetRouteById;
 using Travels.Application.UseCases.UpdateRoute;
+using Travels.Application.Interfaces.Repositories;
 using Travels.Application.UseCases.GetCheapestRoute;
 using Travels.Infrastructure;
 using Travels.Infrastructure.Seed;
@@ -38,10 +40,15 @@ builder.Services.AddInfrastructureServices(); // Serviços de Infrastructure
 
 builder.Services.AddSingleton<IRouteRepository, RouteRepository>();
 
-builder.Services.AddTransient<AddRouteHandler>();
-builder.Services.AddTransient<UpdateRouteHandler>();
-builder.Services.AddTransient<GetCheapestRouteHandler>();
-builder.Services.AddTransient<ICheapestRouteFinder, CheapestRouteFinder>();
+builder.Services.AddTransient<AddRouteUseCase>();
+builder.Services.AddTransient<UpdateRouteUseCase>();
+builder.Services.AddTransient<AddRouteUseCase>();
+builder.Services.AddTransient<GetRouteByIdUseCase>();
+builder.Services.AddTransient<GetRouteUseCase>();
+builder.Services.AddTransient<DeleteRouteUseCase>();
+builder.Services.AddTransient<UpdateRouteUseCase>();
+builder.Services.AddTransient<GetCheapestRouteUseCase>();
+builder.Services.AddTransient<IGetCheapestRouteCommand, GetCheapestRouteCommand>();
 
 builder.Services.AddTransient<RouteSeeder>();
 

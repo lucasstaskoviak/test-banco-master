@@ -10,10 +10,10 @@ public class RouteRepository : IRouteRepository
 
     public Task<List<Route>> GetAllAsync()
     {
-         return Task.FromResult(_routes);
+        return Task.FromResult(_routes);
     }
 
-    public Task<Route?> GetByIdAsync(int id)
+    public Task<Route?> GetByIdAsync(long id)
     {
         var route = _routes.FirstOrDefault(r => r.Id == id);
         return Task.FromResult(route);
@@ -26,7 +26,7 @@ public class RouteRepository : IRouteRepository
         return Task.CompletedTask;
     }
 
-    public Task DeleteAsync(int id)
+    public Task DeleteAsync(long id)
     {
         var route = _routes.FirstOrDefault(r => r.Id == id);
         if (route != null)

@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using Travels.Application.UseCases.AddRoute;
 using Travels.Application.UseCases.UpdateRoute;
 using Travels.Application.UseCases.GetCheapestRoute;
+using Travels.Application.UseCases.GetRouteById;
+using Travels.Application.UseCases.GetRoute;
+using Travels.Application.UseCases.DeleteRoute;
 using Travels.Application.Interfaces.Repositories;
 using Travels.Domain.Entities;
 
@@ -11,35 +14,41 @@ namespace Travels.Api.Controllers
     [ApiController]
     public class RoutesController : ControllerBase
     {
-        private readonly IRouteRepository _routeRepository;
-        private readonly AddRouteHandler _addRouteHandler;
-        private readonly GetCheapestRouteHandler _getCheapestRouteHandler;
-        private readonly UpdateRouteHandler _updateRouteHandler;
+        private readonly AddRouteUseCase _addRouteUseCase;
+        private readonly GetRouteByIdUseCase _getRouteByIdUseCase;
+        private readonly GetRouteUseCase _getRouteUseCase;
+        private readonly GetCheapestRouteUseCase _getCheapestRouteUseCase;
+        private readonly UpdateRouteUseCase _updateRouteUseCase;
+        private readonly DeleteRouteUseCase _deleteRouteUseCase;
 
-        public RoutesController(IRouteRepository routeRepository, 
-                                AddRouteHandler addRouteHandler,
-                                GetCheapestRouteHandler getCheapestRouteHandler,
-                                UpdateRouteHandler updateRouteHandler)
+        public RoutesController(AddRouteUseCase addRouteUseCase,
+                                GetRouteByIdUseCase getRouteByIdUseCase,
+                                GetRouteUseCase getRouteUseCase,
+                                GetCheapestRouteUseCase getCheapestRouteUseCase,
+                                UpdateRouteUseCase updateRouteUseCase,
+                                DeleteRouteUseCase deleteRouteUseCase)
         {
-            _routeRepository = routeRepository;
-            _addRouteHandler = addRouteHandler;
-            _getCheapestRouteHandler = getCheapestRouteHandler;
-            _updateRouteHandler = updateRouteHandler;
+            _addRouteUseCase = addRouteUseCase;
+            _getCheapestRouteUseCase = getCheapestRouteUseCase;
+            _updateRouteUseCase = updateRouteUseCase;
+            _getRouteByIdUseCase = getRouteByIdUseCase;
+            _getRouteUseCase = getRouteUseCase;
+            _deleteRouteUseCase = deleteRouteUseCase;
         }
 
         /// <summary>
         /// Cria uma nova rota de viagem.
         /// </summary>
-        /// <param name="command">Objeto contendo os detalhes da rota.</param>
+        /// <param name="dto">Objeto contendo os detalhes da rota.</param>
         /// <returns>Rota criada.</returns>
         /// <response code="201">Retorna a rota criada com sucesso.</response>
         /// <response code="400">Se os dados fornecidos forem inválidos.</response>
         [HttpPost]
-        [ProducesResponseType(typeof(AddRouteCommand), 201)]
+        [ProducesResponseType(typeof(AddRouteDto), 201)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> Post([FromBody] AddRouteCommand command)
+        public async Task<IActionResult> Post([FromBody] AddRouteDto dto)
         {
-            var result = await _addRouteHandler.Handle(command);
+            var result = await _addRouteUseCase.ExecuteAsync(dto);
             if (result.IsSuccess)
             {
                 return CreatedAtAction(nameof(Get), new { id = result.Value?.Id }, result.Value);
@@ -50,19 +59,19 @@ namespace Travels.Api.Controllers
         /// <summary>
         /// Atualiza uma rota de viagem.
         /// </summary>
-        /// <param name="command">Objeto contendo os detalhes da rota.</param>
+        /// <param name="dto">Objeto contendo os detalhes da rota.</param>
         /// <returns>Rota criada.</returns>
         /// <response code="200">Retorna a rota alterada com sucesso.</response>
         /// <response code="400">Se os dados fornecidos forem inválidos.</response>
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] UpdateRouteCommand command)
+        public async Task<IActionResult> Update(long id, [FromBody] UpdateRouteDto dto)
         {
-            if (id != command.Id)
+            if (id != dto.Id)
             {
                 return BadRequest("Route ID mismatch.");
             }
 
-            var result = await _updateRouteHandler.Handle(command);
+            var result = await _updateRouteUseCase.ExecuteAsync(dto);
 
             if (result.IsSuccess)
             {
@@ -76,13 +85,15 @@ namespace Travels.Api.Controllers
         /// Obtém todas as rotas cadastradas.
         /// </summary>
         /// <returns>Lista de rotas.</returns>
-        /// <response code="200">Retorna a lista de rotas.</response>
         [HttpGet]
-        [ProducesResponseType(typeof(List<Domain.Entities.Route>), 200)]
-        public async Task<ActionResult<IEnumerable<Domain.Entities.Route>>> Get()
+        public async Task<ActionResult> Get()
         {
-            var routes = await _routeRepository.GetAllAsync();
-            return Ok(routes);
+            var routes = await _getRouteUseCase.ExecuteAsync();
+            if (routes.IsFailure)
+            {
+                return NotFound(routes.Error);
+            }
+            return Ok(routes.Value);
         }
 
         /// <summary>
@@ -91,18 +102,17 @@ namespace Travels.Api.Controllers
         /// <returns>Rota específica.</returns>
         /// <response code="200">Retorna a rota.</response>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Domain.Entities.Route>> Get(int id)
+        public async Task<IActionResult> GetRouteById(long id)
         {
-            var route = await _routeRepository.GetByIdAsync(id);
-
-            if (route == null)
+            var result = await _getRouteByIdUseCase.ExecuteAsync(id);
+            
+            if (result.IsFailure)
             {
-                return NotFound();
+                return NotFound(result.Error);
             }
 
-            return Ok(route);
+            return Ok(result.Value);
         }
-
 
         /// <summary>
         /// Calcula a rota mais barata entre dois destinos.
@@ -115,7 +125,7 @@ namespace Travels.Api.Controllers
         [HttpGet("cheapest/from/{from}/to/{to}")]
         public async Task<IActionResult> GetCheapestRoute(string from, string to)
         {
-            var result = await _getCheapestRouteHandler.Handle(from, to);
+            var result = await _getCheapestRouteUseCase.ExecuteAsync(from, to);
 
             if (result.IsSuccess)
             {
@@ -128,13 +138,13 @@ namespace Travels.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var route = await _routeRepository.GetByIdAsync(id);
-            if (route == null)
+            var success = await _deleteRouteUseCase.ExecuteAsync(id);
+
+            if (!success)
             {
                 return NotFound();
             }
 
-            await _routeRepository.DeleteAsync(id);
             return NoContent();
         }
     }

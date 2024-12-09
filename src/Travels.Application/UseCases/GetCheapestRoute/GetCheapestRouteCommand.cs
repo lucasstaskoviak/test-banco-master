@@ -1,16 +1,16 @@
 using Travels.Application.Interfaces.Repositories;
-using Travels.Application.Interfaces.Services;
+using Travels.Application.Interfaces;
 using Travels.Domain.Entities;
 using Travels.Application.Common;
-using Travels.Application.DTOs;
+using Travels.Application.UseCases.GetCheapestRoute;
 
-namespace Travels.Application.Services
+namespace Travels.Application.UseCases.GetCheapestRoute
 {
-    public class CheapestRouteFinder : ICheapestRouteFinder
+    public class GetCheapestRouteCommand : IGetCheapestRouteCommand
     {
         private readonly IRouteRepository _routeRepository;
 
-        public CheapestRouteFinder(IRouteRepository routeRepository)
+        public GetCheapestRouteCommand(IRouteRepository routeRepository)
         {
             _routeRepository = routeRepository;
         }

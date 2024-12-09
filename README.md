@@ -164,9 +164,11 @@ Para rodar os teste:
 - Utilizar conceito de cache;
 - Criar pipeline para executar testes e build automaticamente;
 - Criar DTO's específicos para cada tipo de representação de entidades;
-- Segmentar a parte de interação de base de dados e regra de negócio em Services e Repositories;
+- Criar interfaces para os UsesCase e incluir na comunicação com o Controller;
+- Acrescentar regras faltantes de validação;
 - Implementar ou usar alguma library para lidar com erros de maneira mais eficiente;
 - Melhorar documentação de API's e utilizar SwaggerRequestExample;
 - Teste de integração;
 - Padronizar/Annotations propriedades das entidades;
+- Criar uma entidade específica para o preço, com uma trativa mais inteligente sobre valores;
 - Adicionar JWT para autenticação.

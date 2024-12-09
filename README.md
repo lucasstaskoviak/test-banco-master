@@ -24,52 +24,75 @@ O projeto é organizado utilizando o padrão Clean Architecture e contém as seg
 ## Endpoints
 
 - POST /routes
+
 Cria uma nova rota de viagem.
+
 Resposta:
+
 - Código 201: Rota criada com sucesso.
 
-
+------------------------------------------------
 
 - GET /routes
+
 Obtém todas as rotas cadastradas.
+
 Resposta:
+
 - Código 200: Retorna uma lista de rotas.
 
-
+------------------------------------------------
 
 - GET /routes/{id}
+
 Obtém uma rota específica pelo ID.
+
 Resposta:
+
 - Código 200: Retorna a rota solicitada.
+
 - Código 404: Rota não encontrada.
 
-
-
+------------------------------------------------
 - PUT /routes/{id}
+
 Atualiza uma rota existente.
+
 Resposta:
+
 - Código 200: Rota atualizada com sucesso.
+
 - Código 404: Rota não encontrada.
 
-
+------------------------------------------------
 
 - DELETE /routes/{id}
+
 Deleta uma rota pelo ID.
+
 Resposta:
+
 - Código 204: Rota deletada com sucesso.
+
 - Código 404: Rota não encontrada.
 
-
+------------------------------------------------
 
 - GET /routes/cheapest/from/{from}/to/{to}
+  
 Calcula a rota mais barata entre dois destinos.
-Parâmetros da URL:
-- from: Local de origem.
-- to: Local de destino.
-Resposta:
-- Código 200: Retorna a rota mais barata, incluindo o caminho e o custo total.
-- Código 404: Se não for possível encontrar uma rota.
 
+Parâmetros da URL:
+
+- from: Local de origem.
+
+- to: Local de destino.
+
+Resposta:
+
+- Código 200: Retorna a rota mais barata, incluindo o caminho e o custo total.
+
+- Código 404: Se não for possível encontrar uma rota.
 
 
 ## Testes
@@ -81,7 +104,16 @@ O projeto inclui testes unitários para as funcionalidades principais, como:
 ## Rodando a aplicação
 Para rodar a aplicação localmente:
 
-- Clone o repositório:
+***Atenção!!!***
+```
+É necessário ter o .Net 6 instalado e sua respectiva SDK.
+
+Para instalar siga as instruções da página a seguir: https://dotnet.microsoft.com/pt-br/download/dotnet/6.0
+```
+
+------------------------------------------------
+
+- Depois disso, clone o repositório:
 ```
     git clone https://github.com/lucasstaskoviak/test-banco-master.git
 ```
@@ -102,6 +134,7 @@ Para rodar a aplicação localmente:
 ```
 
 Assim que o projeto for iniciado, um banco de dados em memória será criado. Esse banco possue dados relativos ao test case imposto pela empresa. Toda vez que o projeto roda, esses dados são gerados novamente.
+
 A API estará disponível em https://localhost:7113/swagger.
 
 
